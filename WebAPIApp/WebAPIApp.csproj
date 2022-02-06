@@ -8,4 +8,9 @@
     <PackageReference Include="NSwag.AspNetCore" Version="13.15.7" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\WebAPIApp.Core\WebAPIApp.Core.csproj" />
+    <ProjectReference Include="..\WebAPIApp.DataAccess\WebAPIApp.DataAccess.csproj" />
+  </ItemGroup>
+
 </Project>

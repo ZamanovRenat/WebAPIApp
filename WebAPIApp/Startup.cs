@@ -28,9 +28,7 @@ namespace WebAPIApp
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseRouting();
-
+            
             app.UseOpenApi();
             app.UseSwaggerUi3(x =>
             {
@@ -39,12 +37,11 @@ namespace WebAPIApp
 
             app.UseHttpsRedirection();
 
+            app.UseRouting();
+
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
+                endpoints.MapControllers();
             });
         }
     }
