@@ -7,13 +7,12 @@ using WebAPIApp.Core.Domain;
 
 namespace WebAPIApp.DataAccess.Repositories
 {
-    public class InMemoryRepository<T>
-        : IRepository<T>
+    public class InMemoryEmployeesRepository<T> : IRepository<T>
         where T : BaseEntity
     {
         protected IEnumerable<T> Data { get; set; }
 
-        public InMemoryRepository(IEnumerable<T> data)
+        public InMemoryEmployeesRepository(IEnumerable<T> data)
         {
             Data = data;
         }
