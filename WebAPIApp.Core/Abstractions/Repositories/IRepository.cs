@@ -11,5 +11,9 @@ namespace WebAPIApp.Core.Abstractions.Repositories
         Task<IEnumerable<T>> GetAllAsync();
 
         Task<T> GetByIdAsync(Guid id);
+        Task<T> Add();
+        Task<T> Update();
+        Task<T> Delete();
+        Task<T> DeleteById();
     }
 }

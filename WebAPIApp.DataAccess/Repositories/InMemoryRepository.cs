@@ -27,5 +27,25 @@ namespace WebAPIApp.DataAccess.Repositories
         {
             return Task.FromResult(Data.FirstOrDefault(x => x.Id == id));
         }
+
+        public Task<T> Add()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<T> Update()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<T> Delete()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<T> DeleteById()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
