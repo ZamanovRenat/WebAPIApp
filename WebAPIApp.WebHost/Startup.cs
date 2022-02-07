@@ -33,9 +33,9 @@ namespace WebAPIApp.WebHost
 
             services.AddControllers();
             services.AddScoped(typeof(IRepository<Employee>), (x) =>
-                new InMemoryEmployeesRepository<Employee>(FakeDataFactory.Employees));
+                new InMemoryRepository<Employee>(FakeDataFactory.Employees));
             services.AddScoped(typeof(IRepository<Role>), (x) =>
-                new InMemoryRolesRepository<Role>(FakeDataFactory.Roles));
+                new InMemoryRepository<Role>(FakeDataFactory.Roles));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPIApp.WebHost", Version = "v1" });

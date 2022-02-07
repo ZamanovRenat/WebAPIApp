@@ -1,48 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using WebAPIApp.Core.Abstractions.Repositories;
 using WebAPIApp.Core.Domain;
 
 namespace WebAPIApp.DataAccess.Repositories
 {
-    public class InMemoryEmployeesRepository<T> : IRepository<T>
+    public class NotImplementedRepository<T>
+        : IRepository<T>
         where T : BaseEntity
     {
-        protected IEnumerable<T> Data { get; set; }
-
-        public InMemoryEmployeesRepository(IEnumerable<T> data)
-        {
-            Data = data;
-        }
-
         public Task<IEnumerable<T>> GetAllAsync()
         {
-            return Task.FromResult(Data);
+            throw new NotImplementedException();
         }
 
         public Task<T> GetByIdAsync(Guid id)
         {
-            return Task.FromResult(Data.FirstOrDefault(x => x.Id == id));
+            throw new NotImplementedException();
         }
 
-        public Task<T> Add()
+        public Task CreateAsync(T entity)
         {
             throw new NotImplementedException();
         }
 
-        public Task<T> Update()
+        public Task UpdateAsync(T entity)
         {
             throw new NotImplementedException();
         }
 
-        public Task<T> Delete()
+        public Task DeleteAsync(T entity)
         {
             throw new NotImplementedException();
         }
 
-        public Task<T> DeleteById()
+        public Task<IEnumerable<T>> GetByCondition(Func<T, bool> predicate)
         {
             throw new NotImplementedException();
         }
