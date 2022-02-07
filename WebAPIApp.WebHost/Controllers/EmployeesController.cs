@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using WebAPIApp.Core.Abstractions.Repositories;
 using WebAPIApp.Core.Domain.Administration;
+using WebAPIApp.DataAccess.Data;
+using WebAPIApp.DataAccess.Repositories;
+using WebAPIApp.WebHost.Mappers;
 using WebAPIApp.WebHost.Models;
 
 namespace WebAPIApp.WebHost.Controllers
@@ -17,10 +21,20 @@ namespace WebAPIApp.WebHost.Controllers
     public class EmployeesController : ControllerBase
     {
         private readonly IRepository<Employee> _employeeRepository;
+        private readonly IRepository<Role> _rolesRepository;
+        private readonly IEmployeeMapper _employeeMapper;
+        private readonly ILogger<EmployeesController> _logger;
 
-        public EmployeesController(IRepository<Employee> employeeRepository)
+        public EmployeesController(
+            IRepository<Employee> employeeRepository,
+            IRepository<Role> rolesRepository, 
+            IEmployeeMapper employeeMapper,
+            ILogger<EmployeesController> logger)
         {
             _employeeRepository = employeeRepository;
+            _rolesRepository = rolesRepository;
+            _employeeMapper = employeeMapper;
+            _logger = logger;
         }
         /// <summary>
         /// Получить данные всех сотрудников
@@ -67,25 +81,101 @@ namespace WebAPIApp.WebHost.Controllers
                 AppliedPromocodesCount = employee.AppliedPromocodesCount
             };
 
+            _logger.LogInformation("Сотрудник: {0} - просмотрен", id);
+
             return employeeModel;
         }
 
-        // POST api/<EmployeesController>
+        /// <summary>
+        /// Создание сотрудника
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> CreateEmployeeAsync(CreateOrEditEmployeeRequest model)
         {
+            var rolesRepository = new InMemoryRepository<Role>(FakeDataFactory.Roles);
+
+            var roles = await rolesRepository.GetByCondition(x =>
+                model.RoleNames.Contains(x.Name)) as List<Role>;
+
+            var employee = EmployeeStaticMapper.MapFromModel(model, roles);
+
+            try
+            {
+                await _employeeRepository.CreateAsync(employee);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+
+            _logger.LogInformation("Сотрудник - создан");
+
+            return CreatedAtAction(nameof(GetEmployeeByIdAsync), new { id = employee.Id }, null);
         }
 
-        // PUT api/<EmployeesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        /// <summary>
+        /// Изменить сотрудника
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut("{id:guid}")]
+        public async Task<ActionResult> UpdateEmployeeAsync(Guid id, CreateOrEditEmployeeRequest model)
         {
+            Employee employee = await _employeeRepository.GetByIdAsync(id);
+
+            if (employee == null)
+            {
+                return BadRequest();
+            }
+            var roles = await _rolesRepository.GetByCondition(x =>
+                model.RoleNames.Contains(x.Name)) as List<Role>;
+
+            employee = EmployeeStaticMapper.MapFromModel(model, roles, employee);
+
+            try
+            {
+                await _employeeRepository.UpdateAsync(employee);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+
+            _logger.LogInformation("Сотрудник: {0} - изменен", id);
+
+            return NoContent();
         }
 
-        // DELETE api/<EmployeesController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        /// <summary>
+        /// Удалить сотрудника
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete(Guid id)
         {
+
+            Employee toDelete = await _employeeRepository.GetByIdAsync(id);
+
+            if (toDelete == null)
+            {
+                return NotFound();
+            }
+            try
+            {
+                await _employeeRepository.DeleteAsync(toDelete);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+
+            _logger.LogInformation("Сотрудник: {0} - удален", id);
+
+            return NoContent();
         }
     }
 }

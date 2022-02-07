@@ -15,6 +15,7 @@ using WebAPIApp.Core.Abstractions.Repositories;
 using WebAPIApp.Core.Domain.Administration;
 using WebAPIApp.DataAccess.Data;
 using WebAPIApp.DataAccess.Repositories;
+using WebAPIApp.WebHost.Mappers;
 
 namespace WebAPIApp.WebHost
 {
@@ -36,6 +37,7 @@ namespace WebAPIApp.WebHost
                 new InMemoryRepository<Employee>(FakeDataFactory.Employees));
             services.AddScoped(typeof(IRepository<Role>), (x) =>
                 new InMemoryRepository<Role>(FakeDataFactory.Roles));
+            services.AddScoped<IEmployeeMapper, EmployeeMapper>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPIApp.WebHost", Version = "v1" });
