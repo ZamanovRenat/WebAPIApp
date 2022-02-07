@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using WebAPIApp.Core.Abstractions.Repositories;
 using WebAPIApp.Core.Domain.Administration;
 using WebAPIApp.DataAccess.Data;
@@ -22,13 +23,18 @@ namespace WebAPIApp.WebHost.Controllers
         private readonly IRepository<Employee> _employeeRepository;
         private readonly IRepository<Role> _rolesRepository;
         private readonly IEmployeeMapper _employeeMapper;
+        private readonly ILogger<EmployeesController> _logger;
 
-        public EmployeesController(IRepository<Employee> employeeRepository,
-            IRepository<Role> rolesRepository, IEmployeeMapper employeeMapper)
+        public EmployeesController(
+            IRepository<Employee> employeeRepository,
+            IRepository<Role> rolesRepository, 
+            IEmployeeMapper employeeMapper,
+            ILogger<EmployeesController> logger)
         {
             _employeeRepository = employeeRepository;
             _rolesRepository = rolesRepository;
             _employeeMapper = employeeMapper;
+            _logger = logger;
         }
         /// <summary>
         /// Получить данные всех сотрудников
@@ -75,6 +81,8 @@ namespace WebAPIApp.WebHost.Controllers
                 AppliedPromocodesCount = employee.AppliedPromocodesCount
             };
 
+            _logger.LogInformation("Сотрудник: {0} - просмотрен", id);
+
             return employeeModel;
         }
 
@@ -101,6 +109,8 @@ namespace WebAPIApp.WebHost.Controllers
             {
                 return BadRequest(e.Message);
             }
+
+            _logger.LogInformation("Сотрудник - создан");
 
             return CreatedAtAction(nameof(GetEmployeeByIdAsync), new { id = employee.Id }, null);
         }
@@ -134,6 +144,8 @@ namespace WebAPIApp.WebHost.Controllers
                 return BadRequest(e.Message);
             }
 
+            _logger.LogInformation("Сотрудник: {0} - изменен", id);
+
             return NoContent();
         }
 
@@ -160,6 +172,8 @@ namespace WebAPIApp.WebHost.Controllers
             {
                 return BadRequest(e.Message);
             }
+
+            _logger.LogInformation("Сотрудник: {0} - удален", id);
 
             return NoContent();
         }
