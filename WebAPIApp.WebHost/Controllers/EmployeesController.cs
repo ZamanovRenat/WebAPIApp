@@ -92,6 +92,7 @@ namespace WebAPIApp.WebHost.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
+        [ActionName(nameof(CreateEmployeeAsync))]
         public async Task<IActionResult> CreateEmployeeAsync(CreateOrEditEmployeeRequest model)
         {
             var rolesRepository = new InMemoryRepository<Role>(FakeDataFactory.Roles);
@@ -112,7 +113,7 @@ namespace WebAPIApp.WebHost.Controllers
 
             _logger.LogInformation("Сотрудник - создан");
 
-            return CreatedAtAction(nameof(GetEmployeeByIdAsync), new { id = employee.Id }, null);
+            return CreatedAtAction(nameof(CreateEmployeeAsync), new { id = employee.Id }, null);
         }
 
         /// <summary>
