@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace WebAPIApp.Core.Domain.Administration
 {
@@ -10,8 +11,9 @@ namespace WebAPIApp.Core.Domain.Administration
         public string FullName => $"{FirstName} {LastName}";
 
         public string Email { get; set; }
+        public Guid RoleId { get; set; }
 
-        public List<Role> Roles { get; set; }
+    public List<Role> Roles { get; set; }
 
         public int AppliedPromocodesCount { get; set; }
     }

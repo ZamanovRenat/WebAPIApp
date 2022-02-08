@@ -16,5 +16,15 @@ namespace WebAPIApp.DataAccess
         {
             Database.EnsureCreated();
         }
+        //Конфигурирование моделей
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Employee>()
+                .HasKey(c => new {c.RoleId});
+            modelBuilder.Entity<Employee>()
+                .HasOne(c => c.Roles)
+                .WithMany()
+                .HasForeignKey(c => c.RoleId);
+        }
     }
 }
