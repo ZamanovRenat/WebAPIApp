@@ -11,8 +11,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using WebAPIApp.Core.Abstractions.Repositories;
 using WebAPIApp.Core.Domain.Administration;
+using WebAPIApp.DataAccess;
 using WebAPIApp.DataAccess.Data;
 using WebAPIApp.DataAccess.Repositories;
 using WebAPIApp.WebHost.Mappers;
@@ -38,6 +40,14 @@ namespace WebAPIApp.WebHost
             services.AddScoped(typeof(IRepository<Role>), (x) =>
                 new InMemoryRepository<Role>(FakeDataFactory.Roles));
             services.AddScoped<IEmployeeMapper, EmployeeMapper>();
+
+            //Подключение БД
+            services.AddDbContext<DataContext>(x =>
+            {
+                //Использование SQLite
+                x.UseSqlite("Filename=WebAPIAppDb.sqlite");
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPIApp.WebHost", Version = "v1" });
