@@ -13,7 +13,7 @@ namespace WebAPIApp.Core.Domain.Administration
         public string Email { get; set; }
         public Guid RoleId { get; set; }
 
-    public List<Role> Roles { get; set; }
+        public List<Role> Roles { get; set; }
 
         public int AppliedPromocodesCount { get; set; }
     }

@@ -8,23 +8,16 @@ namespace WebAPIApp.DataAccess
     {
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Role> Roles { get; set; }
-        public DbSet<PromoCode> PromoCodes { get; set; }
-        public DbSet<Customer> Customers { get; set; }
-        public DbSet<Preference> Preferences { get; set; }
+
         public DataContext(DbContextOptions<DataContext> dbContextOptions) 
             : base(dbContextOptions)
         {
-            Database.EnsureCreated();
+           // Database.EnsureCreated();
         }
         //Конфигурирование моделей
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Employee>()
-                .HasKey(c => new {c.RoleId});
-            modelBuilder.Entity<Employee>()
-                .HasOne(c => c.Roles)
-                .WithMany()
-                .HasForeignKey(c => c.RoleId);
+
         }
     }
 }

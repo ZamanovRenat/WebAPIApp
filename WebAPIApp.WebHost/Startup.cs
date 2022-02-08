@@ -34,11 +34,14 @@ namespace WebAPIApp.WebHost
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
-            services.AddScoped(typeof(IRepository<Employee>), (x) =>
-                new InMemoryRepository<Employee>(FakeDataFactory.Employees));
-            services.AddScoped(typeof(IRepository<Role>), (x) =>
-                new InMemoryRepository<Role>(FakeDataFactory.Roles));
+            services.AddControllers().AddMvcOptions(x =>
+                x.SuppressAsyncSuffixInActionNames = false);
+            services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
+            services.AddScoped<IDbInitializer, EfDbInitializer>();
+            //services.AddScoped(typeof(IRepository<Employee>), (x) =>
+            //    new InMemoryRepository<Employee>(FakeDataFactory.Employees));
+            //services.AddScoped(typeof(IRepository<Role>), (x) =>
+            //    new InMemoryRepository<Role>(FakeDataFactory.Roles));
             services.AddScoped<IEmployeeMapper, EmployeeMapper>();
 
             //Подключение БД
@@ -55,7 +58,7 @@ namespace WebAPIApp.WebHost
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDbInitializer dbInitializer)
         {
             if (env.IsDevelopment())
             {
@@ -74,6 +77,8 @@ namespace WebAPIApp.WebHost
             {
                 endpoints.MapControllers();
             });
+
+            dbInitializer.InitializeDb();
         }
     }
 }
